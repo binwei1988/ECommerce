@@ -79,4 +79,13 @@ public class UserService {
 			throw new UserNotFoundException("Could not find any user with ID " + id);
 		}
 	}
+	
+	public void delete(Integer id) throws UserNotFoundException {
+		boolean exist = userRepo.existsById(id);
+		if(!exist) {
+			throw new UserNotFoundException("Could not find any user with ID " + id);
+		}else {
+			userRepo.deleteById(id);
+		}
+	}
 }
