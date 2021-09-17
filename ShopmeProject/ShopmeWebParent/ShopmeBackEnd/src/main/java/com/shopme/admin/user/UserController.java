@@ -68,6 +68,20 @@ public class UserController {
 		return "users";		
 	}
 	
+	@GetMapping("/users/new")
+	public String newUser(Model model) {
+		List<Role> listRoles = service.listRoles();
+		
+		User user = new User();
+		user.setEnabled(true);
+		
+		model.addAttribute("user", user);
+		model.addAttribute("listRoles", listRoles);
+		model.addAttribute("pageTitle", "Create New User");
+		
+		return "user_form";
+	}
+	
 	@PostMapping("/users/save")
 	public String saveUser(User user, RedirectAttributes redirectAttributes,
 			@RequestParam("image") MultipartFile multipartFile) throws IOException {
