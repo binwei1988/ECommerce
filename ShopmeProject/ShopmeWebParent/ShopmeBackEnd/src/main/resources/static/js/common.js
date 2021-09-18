@@ -3,10 +3,11 @@ $(document).ready(function() {
 		e.preventDefault();
 		document.logoutForm.submit();
 	});
-	customizeDropDown();
+	
+	customizeDropDownMenu();
 });
 
-function customizeDropDown(){
+function customizeDropDownMenu() {
 	$(".navbar .dropdown").hover(
 		function() {
 			$(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();

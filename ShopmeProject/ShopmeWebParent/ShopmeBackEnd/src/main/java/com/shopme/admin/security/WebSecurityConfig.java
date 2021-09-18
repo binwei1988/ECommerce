@@ -17,14 +17,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
+	public UserDetailsService userDetailsService() {
+		return new ShopmeUserDetailsService();
 	}
 	
 	@Bean
-	
-	public UserDetailsService userDetailsService() {
-		return new ShopmeUserDetailsService();
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 	
 	public DaoAuthenticationProvider authenticationProvider() {
@@ -35,31 +34,37 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return authProvider;
 	}
 	
+	
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(authenticationProvider());
 	}
-	
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/images/**", "/js/**", "/webjars/**").permitAll()
 			.antMatchers("/users/**").hasAuthority("Admin")
 			.antMatchers("/categories/**").hasAnyAuthority("Admin", "Editor")
 			.anyRequest().authenticated()
 			.and()
-			.formLogin()
+			.formLogin()			
 				.loginPage("/login")
 				.usernameParameter("email")
-			.permitAll()
+				.permitAll()
 			.and().logout().permitAll()
-			.and().rememberMe().key("fadfafjkfd");
-		
+			.and()
+				.rememberMe()
+					.key("AbcDefgHijKlmnOpqrs_1234567890")
+					.tokenValiditySeconds(7 * 24 * 60 * 60);
+					;
+			
 	}
-	
-//	@Override
-//	public void configure(WebSecurity web) throws Exception {
-//		web.ignoring().antMatchers("/images/**", "/js/**", "/webjars/**");
-//	}
+
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().antMatchers("/images/**", "/js/**", "/webjars/**");
+	}
+
 	
 }

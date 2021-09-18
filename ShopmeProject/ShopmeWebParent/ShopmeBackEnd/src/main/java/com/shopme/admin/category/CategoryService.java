@@ -11,6 +11,9 @@ import java.util.TreeSet;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +22,13 @@ import com.shopme.common.entity.Category;
 @Service
 @Transactional
 public class CategoryService {
+	public static final int ROOT_CATEGORIES_PER_PAGE = 4;
+	
 	@Autowired
 	private CategoryRepository repo;
 	
-	public List<Category> listAll(String sortDir) {
+	public List<Category> listByPage(CategoryPageInfo pageInfo, int pageNum, String sortDir,
+			String keyword) {
 		Sort sort = Sort.by("name");
 		
 		if (sortDir.equals("asc")) {
@@ -31,9 +37,32 @@ public class CategoryService {
 			sort = sort.descending();
 		}
 		
-		List<Category> rootCategories = repo.findRootCategories(sort);
+		Pageable pageable = PageRequest.of(pageNum - 1, ROOT_CATEGORIES_PER_PAGE, sort);
 		
-		return listHierarchicalCategories(rootCategories, sortDir);
+		Page<Category> pageCategories = null;
+		
+		if (keyword != null && !keyword.isEmpty()) {
+			pageCategories = repo.search(keyword, pageable);	
+		} else {
+			pageCategories = repo.findRootCategories(pageable);
+		}
+		
+		List<Category> rootCategories = pageCategories.getContent();
+		
+		pageInfo.setTotalElements(pageCategories.getTotalElements());
+		pageInfo.setTotalPages(pageCategories.getTotalPages());
+		
+		if (keyword != null && !keyword.isEmpty()) {
+			List<Category> searchResult = pageCategories.getContent();
+			for (Category category : searchResult) {
+				category.setHasChildren(category.getChildren().size() > 0);
+			}
+			
+			return searchResult;
+			
+		} else {
+			return listHierarchicalCategories(rootCategories, sortDir);
+		}
 	}
 	
 	private List<Category> listHierarchicalCategories(List<Category> rootCategories, String sortDir) {
