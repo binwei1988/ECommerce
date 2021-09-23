@@ -18,7 +18,7 @@
 		</div>
 		
 		<th:block th:each="productImage, status : ${product.images}">
-		<div class="col border m-3 p-2" th:id="'divExtraImage' + ${status.index == null ? 0 : status.index}">
+		<div class="col border m-3 p-2" th:id="'divExtraImage' + ${status.index}">
 			<div>
 				<label>Extra Image #[[${status.index+1}]]: [[${productImage.name}]]</label>
 				<a name="linkRemoveExtraImage" 
@@ -26,7 +26,7 @@
 					title="Remove this image"></a>				
 			</div>
 			<div class="m-2">
-				<img th:id="'extraThumbnail' + ${status.index == null ? 0 : status.index}" 
+				<img th:id="'extraThumbnail' + ${status.index}" 
 					th:alt="'Extra image #' + ${status.index + 1} + ' preview'" class="img-fluid"
 					th:src="@{${productImage.imagePath}}"/>
 			</div>
@@ -35,20 +35,20 @@
 					accept="image/png, image/jpeg" />
 			</div>
 			
-			<input type="hidden" name="imageIDs" th:id="'imageId' + ${status.index == null ? 0 : status.index}"
+			<input type="hidden" name="imageIDs" th:id="'imageId' + ${status.index}"
 				th:value="${productImage.id}" />
-			<input type="hidden" name="imageNames" th:id="'imageName' + ${status.index == null ? 0 : status.index}"
+			<input type="hidden" name="imageNames" th:id="'imageName' + ${status.index}"
 				th:value="${productImage.name}" />
 			
 		</div>		
 		</th:block>
 		
-		<div class="col border m-3 p-2" th:id="'divExtraImage' + ${numberOfExistingExtraImages == null ? 0 : numberOfExistingExtraImages}">
+		<div class="col border m-3 p-2" th:id="'divExtraImage' + ${numberOfExistingExtraImages}">
 			<div th:id="'extraImageHeader' + ${numberOfExistingExtraImages}">
 				<label>Extra Image #[[${numberOfExistingExtraImages == null? 1 :  numberOfExistingExtraImages+1}]]:</label>
 			</div>
 			<div class="m-2">
-				<img th:id="'extraThumbnail' + ${numberOfExistingExtraImages == null ? 0 : numberOfExistingExtraImages}" 
+				<img th:id="'extraThumbnail' + ${numberOfExistingExtraImages }" 
 					th:alt="'Extra image' + ${numberOfExistingExtraImages} + ' preview'" class="img-fluid"
 					th:src="@{/images/image-thumbnail.png}"/>
 			</div>
