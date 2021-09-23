@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.shopme.common.entity.Category;
+import com.shopme.common.exception.CategoryNotFoundException;
 
 @Service
 @Transactional
@@ -106,12 +107,9 @@ public class CategoryService {
 	public Category save(Category category) {
 		Category parent = category.getParent();
 		if (parent != null) {
-			this.save(parent);
-			String allParentIds = parent.getAllParentIDs() + String.valueOf(parent.getId())+ "-" ;
-//			allParentIds += "-" ;
+			String allParentIds = parent.getAllParentIDs() == null ? "-" : parent.getAllParentIDs();
+			allParentIds += String.valueOf(parent.getId()) + "-";
 			category.setAllParentIDs(allParentIds);
-		}else {
-			category.setAllParentIDs("-");
 		}
 		
 		return repo.save(category);
