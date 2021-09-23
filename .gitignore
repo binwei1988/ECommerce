@@ -33,6 +33,6 @@ build/
 .vscode/
 
 /.metadata/
-category-images
-brand-logos
-product-images
+./ShopmeProject/ShopmeWebParent/category-images
+./ShopmeProject/ShopmeWebParent/brand-logos
+./ShopmeProject/ShopmeWebParent/product-images
